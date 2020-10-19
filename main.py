@@ -7,9 +7,10 @@ from linebot.exceptions import (
     InvalidSignatureError
 )
 from linebot.models import (
-    MessageEvent, TextMessage, TextSendMessage,
+    MessageEvent, TextMessage, TextSendMessage, ImageSendMessage
 )
 import os
+import qrcode
 
 app = Flask(__name__)
 
@@ -41,9 +42,14 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
+    img = qrcode.make(event.message.text)
     line_bot_api.reply_message(
         event.reply_token,
-        TextSendMessage(text=event.message.text))
+        ImageSendMessage(
+            original_content_url=img,
+            preview_image_url=img,
+        )
+    )
 
 
 if __name__ == "__main__":
