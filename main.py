@@ -23,7 +23,7 @@ def index():
     return 'LINE QR Code Generator by horri1520'
 
 
-@app_route("/show_imgs")
+@app.route("/show_imgs")
 def show_imaages():
     targets = glob.glob('static/images/*.png')
     return targets
