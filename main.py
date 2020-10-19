@@ -25,19 +25,19 @@ def index():
 
 @app.route("/show_imgs")
 def show_images():
-    targets = glob.glob('static/images/*.png')
+    images = glob.glob('static/images/*.png')
     result = ''
-    for image in targets:
+    for image in images:
         result += '{}\n'.format(image)
-    return result
+    return '{}images detected\n{}'.format(len(images) ,result)
 
 
 @app.route("/delete_imgs")
 def delete_images():
-    targets = glob.glob('static/images/*.png')
-    for image in targets:
+    images = glob.glob('static/images/*.png')
+    for image in images:
         os.remove(image)
-    return '{} images deleted.'.format(len(targets))
+    return '{} images deleted.'.format(len(images))
 
 
 @app.route("/callback", methods=['POST'])
