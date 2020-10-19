@@ -1,4 +1,5 @@
 import qrcode
 
-img = qrcode.make('line-qrcode-gen')
-img.save('./logo.png')
+img = qrcode.make('event.message.text')
+img_path = 'result.png'
+img.save('./' + img_path)
