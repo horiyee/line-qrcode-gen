@@ -24,9 +24,12 @@ def index():
 
 
 @app.route("/show_imgs")
-def show_imaages():
+def show_images():
     targets = glob.glob('static/images/*.png')
-    return targets
+    result = ''
+    for image in targets:
+        result += '{}\n'.format(image)
+    return result
 
 
 @app.route("/delete_imgs")
