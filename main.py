@@ -1,16 +1,12 @@
-from flask import Flask, request, abort
-
-from linebot import (
-    LineBotApi, WebhookHandler
-)
-from linebot.exceptions import (
-    InvalidSignatureError
-)
-from linebot.models import (
-    MessageEvent, TextMessage, TextSendMessage, ImageSendMessage
-)
+import glob
 import os
+
 import qrcode
+from flask import Flask, abort, request
+from linebot import LineBotApi, WebhookHandler
+from linebot.exceptions import InvalidSignatureError
+from linebot.models import (ImageSendMessage, MessageEvent, TextMessage,
+                            TextSendMessage)
 
 app = Flask(__name__)
 
@@ -20,6 +16,25 @@ YOUR_CHANNEL_SECRET = os.environ["YOUR_CHANNEL_SECRET"]
 
 line_bot_api = LineBotApi(YOUR_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(YOUR_CHANNEL_SECRET)
+
+
+@app.route("/")
+def index():
+    return 'LINE QR Code Generator by horri1520'
+
+
+@app_route("/show_imgs")
+def show_imaages():
+    targets = glob.glob('static/images/*.png')
+    return targets
+
+
+@app.route("/delete_imgs")
+def delete_images():
+    targets = glob.glob('static/images/*.png')
+    for image in targets:
+        os.remove(image)
+    return '{} images deleted.'.format(len(targets))
 
 
 @app.route("/callback", methods=['POST'])
@@ -44,9 +59,15 @@ def callback():
 def handle_message(event):
     message_id = event.message.id
     img = qrcode.make(event.message.text)
+    img_path = 'static/images/{}.png'.format(message_id)
+    img.save(img_path)
+    img_url = 'https://line-qrcode-gen.herokuapp.com/{}'.format(img_path)
     line_bot_api.reply_message(
         event.reply_token,
-        TextSendMessage(text='{} {}'.format(message_id, event.message.text))
+        ImageSendMessage(
+            original_content_url=img_url,
+            preview_image_url=img_url,
+        )
     )
 
     # # img_path = 'static/images/{}.png'.format(img_name)
@@ -60,7 +81,6 @@ def handle_message(event):
     #         preview_image_url=img_url,
     #     )
     # )
-    os.remove(img_path)
 
 
 if __name__ == "__main__":
