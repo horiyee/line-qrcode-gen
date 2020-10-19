@@ -44,7 +44,7 @@ def callback():
 def handle_message(event):
     img = qrcode.make(event.message.text)
     img_path = 'static/images/result.png'
-    img.save(img_path)
+    img.save('./' + img_path)
     img_url = 'https://line-qrcode-gen/herokuapp.com/{}'.format(img_path)
     line_bot_api.reply_message(
         event.reply_token,
