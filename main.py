@@ -56,7 +56,7 @@ def handle_message(event):
             preview_image_url=img_url,
         )
     )
-    os.remove(img_path)
+    # os.remove(img_path)
 
 
 if __name__ == "__main__":
