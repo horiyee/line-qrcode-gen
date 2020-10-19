@@ -68,9 +68,9 @@ def handle_message(event):
     img_url = 'https://line-qrcode-gen.herokuapp.com/{}'.format(img_path)
     line_bot_api.reply_message(
         event.reply_token,
-        TextSendMessage(
-            text='「{}」をQRコードに変換しました！'.format(message)
-        ),
+        # TextSendMessage(
+        #     text='「{}」をQRコードに変換しました！'.format(message)
+        # ),
         ImageSendMessage(
             original_content_url=img_url,
             preview_image_url=img_url,
