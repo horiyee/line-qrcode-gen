@@ -10,6 +10,7 @@ from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage, ImageSendMessage
 )
 import os
+import datetime
 import qrcode
 
 app = Flask(__name__)
@@ -43,26 +44,19 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     img = qrcode.make(event.message.text)
+    dt_now = datetime.datetime.now()
+    img_name = dt_now.strftime('%Y-%m-%d-%H-%M-%S')
+    img_path = 'static/images/{}.png'.format(img_name)
+    img.save('./' + img_path)
+    img_url = 'https://line-qrcode-gen/herokuapp.com/{}'.format(img_path)
     line_bot_api.reply_message(
         event.reply_token,
         ImageSendMessage(
-            original_content_url=img,
-            preview_image_url=img,
+            original_content_url=img_url,
+            preview_image_url=img_url,
         )
     )
-
-    # img = qrcode.make(event.message.text)
-    # img_path = 'static/images/result.png'
-    # img.save('/' + img_path)
-    # img_url = 'https://line-qrcode-gen/herokuapp.com/{}'.format(img_path)
-    # line_bot_api.reply_message(
-    #     event.reply_token,
-    #     ImageSendMessage(
-    #         original_content_url=img_url,
-    #         preview_image_url=img_url,
-    #     )
-    # )
-    # os.remove(img_path)
+    os.remove(img_path)
 
 
 if __name__ == "__main__":
