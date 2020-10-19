@@ -14,6 +14,8 @@ app = Flask(__name__)
 YOUR_CHANNEL_ACCESS_TOKEN = os.environ["YOUR_CHANNEL_ACCESS_TOKEN"]
 YOUR_CHANNEL_SECRET = os.environ["YOUR_CHANNEL_SECRET"]
 
+YOUR_APP_URL = 'https://line-qrcode-gen.herokuapp.com/'
+
 line_bot_api = LineBotApi(YOUR_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(YOUR_CHANNEL_SECRET)
 
@@ -26,9 +28,10 @@ def index():
 @app.route("/show_imgs")
 def show_images():
     images = glob.glob('static/images/*.png')
+    images.sort()
     result = ''
     for image in images:
-        result += '{}\n'.format(image)
+        result += YOUR_APP_URL + image
     return '{} images detected.\n{}'.format(len(images), result)
 
 
@@ -65,7 +68,7 @@ def handle_message(event):
     img = qrcode.make(message)
     img_path = 'static/images/{}.png'.format(message_id)
     img.save(img_path)
-    img_url = 'https://line-qrcode-gen.herokuapp.com/{}'.format(img_path)
+    img_url = YOUR_APP_URL + img_path
     line_bot_api.reply_message(
         event.reply_token,
         [
