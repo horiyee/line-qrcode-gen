@@ -29,7 +29,7 @@ def show_images():
     result = ''
     for image in images:
         result += '{}\n'.format(image)
-    return '{}images detected\n{}'.format(len(images) ,result)
+    return '{} images detected.\n{}'.format(len(images) ,result)
 
 
 @app.route("/delete_imgs")
