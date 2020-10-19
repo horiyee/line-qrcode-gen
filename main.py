@@ -70,10 +70,7 @@ def handle_message(event):
         event.reply_token,
         TextSendMessage(
             text='"{}" をQRコードに変換しました！'.format(message)
-        )
-    )
-    line_bot_api.reply_message(
-        event.reply_token,
+        ),
         ImageSendMessage(
             original_content_url=img_url,
             preview_image_url=img_url,
