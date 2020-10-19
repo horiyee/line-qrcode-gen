@@ -70,7 +70,7 @@ def handle_message(event):
         event.reply_token,
         [
             TextSendMessage(
-                text='「{}」をQRコードに変換しました！'.format(message)
+                text='"{}" をQRコードに変換しました！'.format(message)
             ),
             ImageSendMessage(
                 original_content_url=img_url,
