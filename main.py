@@ -29,7 +29,7 @@ def show_images():
     result = ''
     for image in images:
         result += '{}\n'.format(image)
-    return '{} images detected.\n{}'.format(len(images) ,result)
+    return '{} images detected.\n{}'.format(len(images), result)
 
 
 @app.route("/delete_imgs")
@@ -60,11 +60,18 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
+    message = event.message.text
     message_id = event.message.id
-    img = qrcode.make(event.message.text)
+    img = qrcode.make(message)
     img_path = 'static/images/{}.png'.format(message_id)
     img.save(img_path)
     img_url = 'https://line-qrcode-gen.herokuapp.com/{}'.format(img_path)
+    line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(
+            text='"{}" をQRコードに変換しました！'.format(message)
+        )
+    )
     line_bot_api.reply_message(
         event.reply_token,
         ImageSendMessage(
