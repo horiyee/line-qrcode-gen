@@ -109,6 +109,7 @@ def handle_message(event):
                 event.reply_token,
                 [
                     TextSendMessage(text='エラーが発生しました。もう一度送ってみてね！'),
+                    TextSendMessage(text=str(type(error)))
                 ]
             )
 
