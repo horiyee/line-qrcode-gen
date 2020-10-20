@@ -1,8 +1,9 @@
 import glob
 import os
+import zipfile
 
 import qrcode
-from flask import Flask, abort, request
+from flask import Flask, abort, request, send_file
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import (ImageSendMessage, MessageEvent, TextMessage,
@@ -42,6 +43,16 @@ def delete_images():
         os.remove(image)
     return '{} images deleted.'.format(len(images))
 
+@app.route("/download_imgs")
+def download_images():
+    images = glob.glob('static/images/*.png')
+    zip_name = 'generated_qrcodes.zip'
+    zip_path = 'static/{}'.format(zip_name)
+    with zipfile.ZipFile(zip_path, 'w', compression=zipfile.ZIP_STORED) as new_zip:
+        for image in images:
+            new_zip.write(image)
+    return send_file(zip_path)
+
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -65,22 +76,27 @@ def callback():
 def handle_message(event):
     message = event.message.text
     message_id = event.message.id
-    img = qrcode.make(message)
-    img_path = 'static/images/{}.png'.format(message_id)
-    img.save(img_path)
-    img_url = YOUR_APP_URL + img_path
-    line_bot_api.reply_message(
-        event.reply_token,
-        [
-            TextSendMessage(
-                text='"{}" をQRコードに変換しました！'.format(message)
-            ),
-            ImageSendMessage(
-                original_content_url=img_url,
-                preview_image_url=img_url,
-            )
-        ]
-    )
+    try:
+        img = qrcode.make(message)
+        img_path = 'static/images/{}.png'.format(message_id)
+        img.save(img_path)
+        img_url = YOUR_APP_URL + img_path
+        line_bot_api.reply_message(
+            event.reply_token,
+            [
+                TextSendMessage(
+                    text='"{}" をQRコードに変換しました！'.format(message)
+                ),
+                ImageSendMessage(
+                    original_content_url=img_url,
+                    preview_image_url=img_url,
+                )
+            ]
+        )
+    except Exception as error:
+        print(error)
+    else:
+        print('Generate completed normally.')
 
 
 if __name__ == "__main__":
