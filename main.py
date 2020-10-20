@@ -32,7 +32,7 @@ def show_images():
     images.sort()
     result = ''
     for image in images:
-        result += YOUR_APP_URL + image
+        result += YOUR_APP_URL + image + '\n'
     return '{} images detected.\n{}'.format(len(images), result)
 
 
@@ -50,7 +50,9 @@ def download_images():
     zip_path = 'static/{}'.format(zip_name)
     with zipfile.ZipFile(zip_path, 'w', compression=zipfile.ZIP_STORED) as new_zip:
         for image in images:
-            new_zip.write(image)
+            img_name = image.split('/')
+            img_name = img_name[2]
+            new_zip.write(image, arcname=img_name)
     return send_file(zip_path)
 
 
@@ -93,10 +95,9 @@ def handle_message(event):
                 )
             ]
         )
+        print('Generate completed normally.')
     except Exception as error:
         print(error)
-    else:
-        print('Generate completed normally.')
 
 
 if __name__ == "__main__":
