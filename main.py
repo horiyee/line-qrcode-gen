@@ -97,16 +97,13 @@ def handle_message(event):
             ]
         )
     except Exception as error:
-        if str(type(error)) == 'qrcode.exceptions.DataOverflowError':
-            line_bot_api.reply_message(
-                event.reply_token,
-                TextSendMessage(text='そんなに長い文章は変換できません！！'),
-            )
-        else:
-            line_bot_api.reply_message(
-                event.reply_token,
+        line_bot_api.reply_message(
+            event.reply_token,
+            [
                 TextSendMessage(text='エラーが発生しました。。。'),
-            )
+                TextSendMessage(text='送った文章が長い場合は短くしてね！もしエラーが頻発する場合は、もっと別な文章を送ってみてね！'),
+            ]
+        )
 
 
 if __name__ == "__main__":
