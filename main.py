@@ -44,22 +44,6 @@ def delete_images():
     return '{} images deleted.'.format(len(images))
 
 
-@app.route("/download_imgs")
-def download_images():
-    previous_zips = glob.glob('static/*.zip')
-    for previous_zip in previous_zips:
-        os.remove(previous_zip)
-    images = glob.glob('static/images/*.png')
-    zip_name = 'generated_qrcodes'
-    zip_path = 'static/{}.zip'.format(zip_name)
-    with zipfile.ZipFile(zip_path, 'w', compression=zipfile.ZIP_STORED) as new_zip:
-        for image in images:
-            img_name = image.split('/')
-            img_name = img_name[2]
-            new_zip.write(image)
-    return send_file(zip_path)
-
-
 @app.route("/callback", methods=['POST'])
 def callback():
     # get X-Line-Signature header value
@@ -104,7 +88,8 @@ def handle_message(event):
             event.reply_token,
             [
                 TextSendMessage(text='エラーが発生しました。。。'),
-                TextSendMessage(text='送った文章が長い場合は短くしてね！もしエラーが頻発する場合は、もっと別な文章を送ってみてね！'),
+                TextSendMessage(
+                    text='送った文章が長い場合は短くしてね！もしエラーが頻発する場合は、もっと別な文章を送ってみてね！'),
             ]
         )
 
