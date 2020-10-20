@@ -46,6 +46,9 @@ def delete_images():
 
 @app.route("/download_imgs")
 def download_images():
+    previous_zips = glob.glob('static/*.zip')
+    for previous_zip in previous_zips:
+        os.remove(previous_zip)
     images = glob.glob('static/images/*.png')
     zip_name = 'generated_qrcodes'
     zip_path = 'static/{}.zip'.format(zip_name)
@@ -53,7 +56,7 @@ def download_images():
         for image in images:
             img_name = image.split('/')
             img_name = img_name[2]
-            new_zip.write(image, arcname='{}/{}'.format(zip_name, img_name))
+            new_zip.write(image)
     return send_file(zip_path)
 
 
