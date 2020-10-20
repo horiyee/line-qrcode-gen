@@ -43,6 +43,7 @@ def delete_images():
         os.remove(image)
     return '{} images deleted.'.format(len(images))
 
+
 @app.route("/download_imgs")
 def download_images():
     images = glob.glob('static/images/*.png')
@@ -95,9 +96,11 @@ def handle_message(event):
                 )
             ]
         )
-        print('Generate completed normally.')
     except Exception as error:
-        print(error)
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text='エラーが発生しました。')
+        )
 
 
 if __name__ == "__main__":
